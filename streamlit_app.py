@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import base64
 
 st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="wide")
 
@@ -68,7 +67,7 @@ with col_right:
     st.markdown('<div class="section">', unsafe_allow_html=True)
     st.subheader("⚙️ Model Options")
 
-    # ניהול מצב צפייה בגרף
+    # ניהול מצב צפייה בגרף (toggle)
     if "show_graphs" not in st.session_state:
         st.session_state.show_graphs = False
 
@@ -76,15 +75,14 @@ with col_right:
     if st.button("📊 View / Hide Model Performance"):
         st.session_state.show_graphs = not st.session_state.show_graphs
 
-    # הצגת הגרפים (מהתמונה שהעלית)
+    # הצגת הגרף אם נלחץ
     if st.session_state.show_graphs:
         st.markdown("### 📈 Model Accuracy Comparison")
-        with open("הורדה.png", "rb") as file:
-            img_data = base64.b64encode(file.read()).decode("utf-8")
-        st.markdown(
-            f'<img src="data:image/png;base64,{img_data}" style="width:100%; border-radius:10px;">',
-            unsafe_allow_html=True,
-        )
+        try:
+            graph_image = Image.open("graph.png")
+            st.image(graph_image, caption="Accuracy comparison between models", use_container_width=True)
+        except FileNotFoundError:
+            st.error("⚠️ Graph image not found. Please make sure 'graph.png' is in the same folder as this script.")
 
     # בחירת מודל
     model_choice = st.selectbox("Select a model:", ["CNN (Base)", "MobileNetV2", "EfficientNetB0"])
