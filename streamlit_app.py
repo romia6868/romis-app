@@ -67,7 +67,7 @@ button[data-testid="baseButton-primary"] {
 
 # --- כותרת ראשית ---
 st.markdown('<div class="title">🌷 Flower Classifier 🌷</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload a flower photo and get instant AI classification!</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle"Let’s see if my model can guess your flower! Upload an image below 🌸 .</div>', unsafe_allow_html=True)
 
 # --- עמודות זו לצד זו ---
 col1, col2 = st.columns([1.2, 1])
