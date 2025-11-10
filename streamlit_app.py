@@ -39,31 +39,6 @@ st.markdown("""
     padding: 8px 28px !important;
     border: none !important;
 }
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-.modal-content {
-    background-color: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    text-align: center;
-    max-width: 700px;
-    width: 90%;
-}
-.modal-content img {
-    width: 100%;
-    border-radius: 10px;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -93,32 +68,23 @@ with col_right:
     st.markdown('<div class="section">', unsafe_allow_html=True)
     st.subheader("⚙️ Model Options")
 
-    # ניהול מצב של המודאל
-    if "show_graph_modal" not in st.session_state:
-        st.session_state.show_graph_modal = False
+    # ניהול מצב צפייה בגרף
+    if "show_graphs" not in st.session_state:
+        st.session_state.show_graphs = False
 
-    # כפתור צפייה / סגירה
-    if not st.session_state.show_graph_modal:
-        if st.button("📊 View Model Performance"):
-            st.session_state.show_graph_modal = True
-    else:
-        if st.button("❌ Close Graphs"):
-            st.session_state.show_graph_modal = False
+    # כפתור צפייה / הסתרה
+    if st.button("📊 View / Hide Model Performance"):
+        st.session_state.show_graphs = not st.session_state.show_graphs
 
-    # מודאל להצגת הגרף
-    if st.session_state.show_graph_modal:
+    # הצגת הגרפים (מהתמונה שהעלית)
+    if st.session_state.show_graphs:
+        st.markdown("### 📈 Model Accuracy Comparison")
         with open("הורדה.png", "rb") as file:
             img_data = base64.b64encode(file.read()).decode("utf-8")
-        modal_html = f"""
-        <div class="modal">
-            <div class="modal-content">
-                <h3>📈 Model Accuracy Comparison</h3>
-                <img src="data:image/png;base64,{img_data}" alt="Graphs">
-                <p style='margin-top:10px; color:#555;'>Comparison of model accuracy across training methods.</p>
-            </div>
-        </div>
-        """
-        st.markdown(modal_html, unsafe_allow_html=True)
+        st.markdown(
+            f'<img src="data:image/png;base64,{img_data}" style="width:100%; border-radius:10px;">',
+            unsafe_allow_html=True,
+        )
 
     # בחירת מודל
     model_choice = st.selectbox("Select a model:", ["CNN (Base)", "MobileNetV2", "EfficientNetB0"])
@@ -130,3 +96,4 @@ with col_right:
         st.success(f"**Predicted Flower:** {predicted_class}  \n**Confidence:** {confidence:.2f}%")
 
     st.markdown('</div>', unsafe_allow_html=True)
+
