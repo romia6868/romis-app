@@ -30,12 +30,12 @@ if uploaded_file is not None:
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
-    if st.button("סווג את התמונה"):
-        prediction = model.predict(img_array)
-        predicted_class = class_names[np.argmax(prediction)]
-        confidence = np.max(prediction)
-        st.success(f"המודל מזהה: **{predicted_class}** 🌼")
-        st.write(f"✅ רמת ביטחון: {confidence:.2f}")
+  if st.button("סווג את התמונה"):
+    prediction = model.predict(img_array)
+    predicted_class = class_names[np.argmax(prediction)]
+    confidence = np.max(prediction) * 100   # 💡 להמיר לאחוזים
+    st.success(f"המודל מזהה: **{predicted_class}** 🌼")
+    st.write(f"✅ רמת ביטחון: {confidence:.2f}%")  # 💡 הוספת סימן אחוז
 
 
 import streamlit as st
@@ -97,7 +97,7 @@ header {visibility: hidden;}
 
 # --- כותרת ---
 st.markdown('<div class="title">🌷 Flower Classifier 🌷</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload a photo and let AI tell you which flower it is 🌺</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Upload a photo and let my models tell you which flower it is 🌺</div>', unsafe_allow_html=True)
 
 st.markdown('<div class="upload-section">', unsafe_allow_html=True)
 uploaded_file = st.file_uploader("Upload a flower image:", type=["jpg", "png", "jpeg"])
