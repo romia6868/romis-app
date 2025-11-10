@@ -31,12 +31,13 @@ st.markdown("""
     padding: 30px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.1);
 }
-button[data-testid="baseButton-primary"] {
+.stButton > button {
     background-color: #6C63FF !important;
     color: white !important;
     border-radius: 10px !important;
     font-size: 18px !important;
     padding: 8px 28px !important;
+    border: none !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -62,37 +63,48 @@ with col_left:
         st.info("⬆️ Please upload an image to get started.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---- צד ימין: בחירת מודל + סיווג + גרפים ----
+# ---- צד ימין: בחירת מודל + סיווג + צפייה בגרף ----
 with col_right:
     st.markdown('<div class="section">', unsafe_allow_html=True)
     st.subheader("⚙️ Model Options")
 
+    # בחירת מודל
     model_choice = st.selectbox("Select a model:", ["CNN (Base)", "MobileNetV2", "EfficientNetB0"])
 
-    classify_btn = st.button("🌺 Classify Flower")
+    # כפתורים בשורה אחת
+    col_btn1, col_btn2 = st.columns([1, 1.1])
+    with col_btn1:
+        classify_btn = st.button("🌺 Classify")
+    with col_btn2:
+        view_graphs_btn = st.button("📊 View Performance")
 
+    # סיווג (מדומה כרגע)
     if classify_btn and uploaded_file:
-        # כאן תכניסי את הקריאה למודל שלך
         confidence = np.random.uniform(85, 99)
         predicted_class = np.random.choice(["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"])
         st.success(f"**Predicted Flower:** {predicted_class}  \n**Confidence:** {confidence:.2f}%")
 
-    # כפתור לצפייה בגרפים
-    show_graphs = st.checkbox("📊 View Model Performance")
+    # גרף שמופיע רק אחרי לחיצה
+    if view_graphs_btn:
+        with st.container():
+            st.markdown("### 📈 Model Accuracy Comparison")
+            models = ["CNN (Base)", "MobileNetV2", "EfficientNetB0"]
+            accuracy = [89, 93, 96]
 
-    if show_graphs:
-        models = ["CNN (Base)", "MobileNetV2", "EfficientNetB0"]
-        accuracy = [89, 93, 96]
+            fig, ax = plt.subplots(figsize=(4,3))
+            bars = ax.bar(models, accuracy, color=["#9b8fff", "#6C63FF", "#4dd0e1"])
+            ax.set_ylim(80, 100)
+            ax.set_ylabel("Accuracy (%)")
+            ax.set_title("Model Accuracy Comparison")
 
-        fig, ax = plt.subplots(figsize=(4,3))
-        bars = ax.bar(models, accuracy, color=["#9b8fff", "#6C63FF", "#4dd0e1"])
-        ax.set_ylim(80, 100)
-        ax.set_ylabel("Accuracy (%)")
-        ax.set_title("Model Accuracy Comparison")
+            for bar, val in zip(bars, accuracy):
+                ax.text(bar.get_x() + bar.get_width()/2, val + 0.5, f"{val}%", ha='center', fontsize=10)
 
-        for bar, val in zip(bars, accuracy):
-            ax.text(bar.get_x() + bar.get_width()/2, val + 0.5, f"{val}%", ha='center', fontsize=10)
+            st.pyplot(fig)
 
-        st.pyplot(fig)
+            # כפתור סגירה
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.button("❌ Close Graphs")
 
     st.markdown('</div>', unsafe_allow_html=True)
+
