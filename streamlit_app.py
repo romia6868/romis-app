@@ -55,15 +55,36 @@ button[data-testid="baseButton-primary"] {
 
 # --- כותרת ---
 st.markdown('<div class="title">🌷 Flower Classifier 🌷</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload a flower image and see how different models classify it 🌸</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Upload a flower and let my model identify it 🌸</div>', unsafe_allow_html=True)
 
-# --- יצירת עמודות ---
-col1, col2 = st.columns([1.2, 1])
+# --- עמודות: שמאל = מידע, ימין = סיווג ---
+col1, col2 = st.columns([1, 1.1])
 
-# --- עמודה 1: העלאה ובחירה ---
+# --- עמודה שמאלית: מידע וגרפים (מוסתרים ב-expander) ---
 with col1:
+    with st.expander("📊 View Model Performance Comparison", expanded=False):
+        st.write("Here you can explore how different models perform on flower classification tasks.")
+        
+        # גרף לדוגמה
+        models = ["CNN (Base)", "MobileNetV2", "EfficientNetB0"]
+        accuracy = [89, 93, 96]
+
+        fig, ax = plt.subplots(figsize=(4,3))
+        bars = ax.bar(models, accuracy)
+        ax.set_ylim(80, 100)
+        ax.set_ylabel("Accuracy (%)")
+        ax.set_title("Model Accuracy Comparison")
+
+        for bar, val in zip(bars, accuracy):
+            ax.text(bar.get_x() + bar.get_width()/2, val + 0.5, f"{val}%", ha='center', fontsize=10)
+
+        st.pyplot(fig)
+        st.caption("Comparison of model accuracy on validation data.")
+
+# --- עמודה ימנית: סיווג תמונה ---
+with col2:
     st.markdown('<div class="section">', unsafe_allow_html=True)
-    st.subheader("📸 Upload & Choose Model")
+    st.subheader("📸 Upload & Classify")
 
     uploaded_file = st.file_uploader("Upload a flower image:", type=["jpg", "png", "jpeg"])
     model_choice = st.selectbox("Select a model:", ["CNN (Base)", "MobileNetV2", "EfficientNetB0"])
@@ -75,7 +96,6 @@ with col1:
         img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
 
         if st.button("Classify"):
-            # כרגע נשתמש ב-fake prediction עד שהמודלים שלך יהיו זמינים
             confidence = np.random.uniform(85, 99)
             predicted_class = np.random.choice(["Daisy", "Dandelion", "Tulip"])
 
@@ -86,27 +106,5 @@ with col1:
             st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.info("⬆️ Please upload an image first.")
-    st.markdown('</div>', unsafe_allow_html=True)
 
-# --- עמודה 2: השוואת מודלים ---
-with col2:
-    st.markdown('<div class="section">', unsafe_allow_html=True)
-    st.subheader("📊 Model Performance Overview")
-
-    # גרף לדוגמה (אפשר להחליף בתמונה שלך)
-    models = ["CNN (Base)", "MobileNetV2", "EfficientNetB0"]
-    accuracy = [89, 93, 96]
-
-    fig, ax = plt.subplots(figsize=(4,3))
-    bars = ax.bar(models, accuracy)
-    ax.set_ylim(80, 100)
-    ax.set_ylabel("Accuracy (%)")
-    ax.set_title("Model Accuracy Comparison")
-
-    # צבעים יפים
-    for bar, val in zip(bars, accuracy):
-        ax.text(bar.get_x() + bar.get_width()/2, val + 0.5, f"{val}%", ha='center', fontsize=10)
-
-    st.pyplot(fig)
-    st.caption("Comparing model performance on validation data.")
     st.markdown('</div>', unsafe_allow_html=True)
