@@ -30,12 +30,13 @@ if uploaded_file is not None:
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
-  if st.button("סווג את התמונה"):
+if st.button("סווג את התמונה"):
     prediction = model.predict(img_array)
     predicted_class = class_names[np.argmax(prediction)]
-    confidence = np.max(prediction) * 100   # 💡 להמיר לאחוזים
+    confidence = np.max(prediction) * 100   # אחוזים
     st.success(f"המודל מזהה: **{predicted_class}** 🌼")
-    st.write(f"✅ רמת ביטחון: {confidence:.2f}%")  # 💡 הוספת סימן אחוז
+    st.write(f"✅ רמת ביטחון: {confidence:.2f}%")
+
 
 
 import streamlit as st
