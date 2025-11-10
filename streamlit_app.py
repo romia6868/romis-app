@@ -36,3 +36,75 @@ if uploaded_file is not None:
         confidence = np.max(prediction)
         st.success(f"המודל מזהה: **{predicted_class}** 🌼")
         st.write(f"✅ רמת ביטחון: {confidence:.2f}")
+
+
+import streamlit as st
+
+# --- הגדרות עמוד ---
+st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="wide")
+
+# --- עיצוב כללי ---
+st.markdown("""
+<style>
+/* רקע כללי */
+[data-testid="stAppViewContainer"] {
+    background-image: linear-gradient(to bottom right, #f7f4ff, #e0f7fa);
+    background-attachment: fixed;
+}
+
+/* הסתרת הלוגו העליון */
+header {visibility: hidden;}
+
+/* כותרת ראשית */
+.title {
+    text-align: center;
+    font-size: 60px;
+    color: #6C63FF;
+    font-weight: 800;
+    margin-top: 20px;
+}
+
+/* תת־כותרת */
+.subtitle {
+    text-align: center;
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+/* עיצוב הקובץ המועלה */
+.upload-section {
+    text-align: center;
+    border-radius: 20px;
+    background-color: #ffffffcc;
+    padding: 40px;
+    margin: 0 auto;
+    width: 60%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* עיצוב התוצאה */
+.result-box {
+    background-color: white;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 30px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# --- כותרת ---
+st.markdown('<div class="title">🌷 Flower Classifier 🌷</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Upload a photo and let AI tell you which flower it is 🌺</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="upload-section">', unsafe_allow_html=True)
+uploaded_file = st.file_uploader("Upload a flower image:", type=["jpg", "png", "jpeg"])
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="result-box">', unsafe_allow_html=True)
+st.subheader("Prediction Results 🌼")
+st.write(f"**Flower Type:** {predicted_class}")
+st.write(f"**Confidence:** {confidence:.2f}%")
+st.markdown('</div>', unsafe_allow_html=True)
