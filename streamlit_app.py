@@ -40,97 +40,85 @@ if st.button("סווג את התמונה"):
 import streamlit as st
 import numpy as np
 from PIL import Image
+import tensorflow as tf
+
+# טוענים את המודל
+model = tf.keras.models.load_model("cnn_flowers_model.keras")
+class_names = ["daisy", "dandelion", "rose", "sunflower", "tulip"]
 
 # --- הגדרות עמוד ---
-st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="centered")
+st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="wide")
 
-# --- CSS לעיצוב כולל ---
+# --- עיצוב כללי ---
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(to bottom right, #f8f6ff, #e8faff);
+    background-image: linear-gradient(to bottom right, #f7f4ff, #e0f7fa);
     background-attachment: fixed;
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* הסתרת header */
 header {visibility: hidden;}
 
-/* כותרת */
 .title {
     text-align: center;
-    font-size: 48px;
-    font-weight: 800;
+    font-size: 60px;
     color: #6C63FF;
-    margin-top: 10px;
+    font-weight: 800;
+    margin-top: 20px;
 }
 
-/* תת-כותרת */
 .subtitle {
     text-align: center;
-    font-size: 20px;
+    font-size: 22px;
     color: #333;
-    margin-bottom: 35px;
+    margin-bottom: 40px;
 }
 
-/* אזור העלאה */
-.upload-box {
-    background: white;
-    border-radius: 25px;
-    padding: 30px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    width: 80%;
-    margin: 0 auto;
+.upload-section {
     text-align: center;
-}
-
-/* תיבת תוצאה */
-.result-box {
-    background: #ffffffee;
     border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    text-align: center;
-    margin-top: 30px;
+    background-color: #ffffffcc;
+    padding: 40px;
+    margin: 0 auto;
+    width: 60%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* עיצוב כפתור */
-button[data-testid="baseButton-primary"] {
-    background-color: #6C63FF !important;
-    color: white !important;
-    border-radius: 10px !important;
-    font-size: 18px !important;
-    padding: 10px 30px !important;
+.result-box {
+    background-color: white;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 30px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# --- כותרת עליונה ---
+# --- כותרת ---
 st.markdown('<div class="title">🌷 Flower Classifier 🌷</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload a flower photo and get instant AI classification!</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Upload a photo and let my model tell you which flower it is 🌺</div>', unsafe_allow_html=True)
 
-# --- תיבת העלאה ממורכזת ---
-st.markdown('<div class="upload-box">', unsafe_allow_html=True)
-uploaded_file = st.file_uploader("Upload image here", type=["jpg", "png", "jpeg"])
+# --- העלאת תמונה ---
+st.markdown('<div class="upload-section">', unsafe_allow_html=True)
+uploaded_file = st.file_uploader("Upload a flower image:", type=["jpg", "png", "jpeg"])
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --- תוצאה ---
-if uploaded_file:
-    img = Image.open(uploaded_file)
+if uploaded_file is not None:
+    img = Image.open(uploaded_file).convert("RGB")
     img = img.resize((224, 224))
-    img_array = np.array(img) / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
+    img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
 
-    # אזור כפתור ותחזית
     if st.button("🔍 Classify"):
-        # דוגמה בלבד (תחליפי במודל שלך):
-        predicted_class = "Rose"
-        confidence = 97.8
+        prediction = model.predict(img_array)
+        predicted_class = class_names[np.argmax(prediction)]
+        confidence = np.max(prediction) * 100  # אחוזים
 
         st.markdown('<div class="result-box">', unsafe_allow_html=True)
         st.subheader("Prediction Results 🌼")
         st.write(f"**Flower Type:** {predicted_class}")
         st.write(f"**Confidence:** {confidence:.2f}%")
         st.markdown('</div>', unsafe_allow_html=True)
-else:
-    st.info("⬆️ Upload an image above to get started.")
+
