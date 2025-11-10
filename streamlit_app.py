@@ -63,48 +63,43 @@ with col_left:
         st.info("⬆️ Please upload an image to get started.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---- צד ימין: בחירת מודל + סיווג + צפייה בגרף ----
+# ---- צד ימין: צפייה בגרפים, בחירת מודל וסיווג ----
 with col_right:
     st.markdown('<div class="section">', unsafe_allow_html=True)
     st.subheader("⚙️ Model Options")
 
+    # ניהול מצב צפייה בגרף (toggle)
+    if "show_graphs" not in st.session_state:
+        st.session_state.show_graphs = False
+
+    # כפתור צפייה / הסתרה
+    if st.button("📊 View / Hide Model Performance"):
+        st.session_state.show_graphs = not st.session_state.show_graphs
+
+    # הצגת גרפים אם נלחץ
+    if st.session_state.show_graphs:
+        st.markdown("### 📈 Model Accuracy Comparison")
+        models = ["CNN (Base)", "MobileNetV2", "EfficientNetB0"]
+        accuracy = [89, 93, 96]
+
+        fig, ax = plt.subplots(figsize=(4,3))
+        bars = ax.bar(models, accuracy, color=["#9b8fff", "#6C63FF", "#4dd0e1"])
+        ax.set_ylim(80, 100)
+        ax.set_ylabel("Accuracy (%)")
+        ax.set_title("Model Accuracy Comparison")
+
+        for bar, val in zip(bars, accuracy):
+            ax.text(bar.get_x() + bar.get_width()/2, val + 0.5, f"{val}%", ha='center', fontsize=10)
+
+        st.pyplot(fig)
+
     # בחירת מודל
     model_choice = st.selectbox("Select a model:", ["CNN (Base)", "MobileNetV2", "EfficientNetB0"])
 
-    # כפתורים בשורה אחת
-    col_btn1, col_btn2 = st.columns([1, 1.1])
-    with col_btn1:
-        classify_btn = st.button("🌺 Classify")
-    with col_btn2:
-        view_graphs_btn = st.button("📊 View Performance")
-
-    # סיווג (מדומה כרגע)
-    if classify_btn and uploaded_file:
+    # כפתור סיווג
+    if st.button("🌺 Classify") and uploaded_file:
         confidence = np.random.uniform(85, 99)
         predicted_class = np.random.choice(["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"])
         st.success(f"**Predicted Flower:** {predicted_class}  \n**Confidence:** {confidence:.2f}%")
 
-    # גרף שמופיע רק אחרי לחיצה
-    if view_graphs_btn:
-        with st.container():
-            st.markdown("### 📈 Model Accuracy Comparison")
-            models = ["CNN (Base)", "MobileNetV2", "EfficientNetB0"]
-            accuracy = [89, 93, 96]
-
-            fig, ax = plt.subplots(figsize=(4,3))
-            bars = ax.bar(models, accuracy, color=["#9b8fff", "#6C63FF", "#4dd0e1"])
-            ax.set_ylim(80, 100)
-            ax.set_ylabel("Accuracy (%)")
-            ax.set_title("Model Accuracy Comparison")
-
-            for bar, val in zip(bars, accuracy):
-                ax.text(bar.get_x() + bar.get_width()/2, val + 0.5, f"{val}%", ha='center', fontsize=10)
-
-            st.pyplot(fig)
-
-            # כפתור סגירה
-            st.markdown("<br>", unsafe_allow_html=True)
-            st.button("❌ Close Graphs")
-
     st.markdown('</div>', unsafe_allow_html=True)
-
