@@ -37,75 +37,100 @@ if st.button("סווג את התמונה"):
     st.success(f"המודל מזהה: **{predicted_class}** 🌼")
     st.write(f"✅ רמת ביטחון: {confidence:.2f}%")
 
-
-
 import streamlit as st
+import numpy as np
+from PIL import Image
 
 # --- הגדרות עמוד ---
-st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="wide")
+st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="centered")
 
-# --- עיצוב כללי ---
+# --- CSS לעיצוב כולל ---
 st.markdown("""
 <style>
-/* רקע כללי */
 [data-testid="stAppViewContainer"] {
-    background-image: linear-gradient(to bottom right, #f7f4ff, #e0f7fa);
+    background: linear-gradient(to bottom right, #f8f6ff, #e8faff);
     background-attachment: fixed;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* הסתרת הלוגו העליון */
+/* הסתרת header */
 header {visibility: hidden;}
 
-/* כותרת ראשית */
+/* כותרת */
 .title {
     text-align: center;
-    font-size: 60px;
-    color: #6C63FF;
+    font-size: 48px;
     font-weight: 800;
-    margin-top: 20px;
+    color: #6C63FF;
+    margin-top: 10px;
 }
 
-/* תת־כותרת */
+/* תת-כותרת */
 .subtitle {
     text-align: center;
-    font-size: 22px;
+    font-size: 20px;
     color: #333;
-    margin-bottom: 40px;
+    margin-bottom: 35px;
 }
 
-/* עיצוב הקובץ המועלה */
-.upload-section {
-    text-align: center;
-    border-radius: 20px;
-    background-color: #ffffffcc;
-    padding: 40px;
+/* אזור העלאה */
+.upload-box {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    width: 80%;
     margin: 0 auto;
-    width: 60%;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
-/* עיצוב התוצאה */
+/* תיבת תוצאה */
 .result-box {
-    background-color: white;
-    border-radius: 15px;
+    background: #ffffffee;
+    border-radius: 20px;
     padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     margin-top: 30px;
+}
+
+/* עיצוב כפתור */
+button[data-testid="baseButton-primary"] {
+    background-color: #6C63FF !important;
+    color: white !important;
+    border-radius: 10px !important;
+    font-size: 18px !important;
+    padding: 10px 30px !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# --- כותרת ---
+# --- כותרת עליונה ---
 st.markdown('<div class="title">🌷 Flower Classifier 🌷</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload a photo and let my models tell you which flower it is 🌺</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Upload a flower photo and get instant AI classification!</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="upload-section">', unsafe_allow_html=True)
-uploaded_file = st.file_uploader("Upload a flower image:", type=["jpg", "png", "jpeg"])
+# --- תיבת העלאה ממורכזת ---
+st.markdown('<div class="upload-box">', unsafe_allow_html=True)
+uploaded_file = st.file_uploader("Upload image here", type=["jpg", "png", "jpeg"])
 st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="result-box">', unsafe_allow_html=True)
-st.subheader("Prediction Results 🌼")
-st.write(f"**Flower Type:** {predicted_class}")
-st.write(f"**Confidence:** {confidence:.2f}%")
-st.markdown('</div>', unsafe_allow_html=True)
+# --- תוצאה ---
+if uploaded_file:
+    img = Image.open(uploaded_file)
+    img = img.resize((224, 224))
+    img_array = np.array(img) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+
+    # אזור כפתור ותחזית
+    if st.button("🔍 Classify"):
+        # דוגמה בלבד (תחליפי במודל שלך):
+        predicted_class = "Rose"
+        confidence = 97.8
+
+        st.markdown('<div class="result-box">', unsafe_allow_html=True)
+        st.subheader("Prediction Results 🌼")
+        st.write(f"**Flower Type:** {predicted_class}")
+        st.write(f"**Confidence:** {confidence:.2f}%")
+        st.markdown('</div>', unsafe_allow_html=True)
+else:
+    st.info("⬆️ Upload an image above to get started.")
