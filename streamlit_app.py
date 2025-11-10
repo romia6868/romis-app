@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import matplotlib.pyplot as plt
+import base64
 
 st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="wide")
 
@@ -39,6 +39,31 @@ st.markdown("""
     padding: 8px 28px !important;
     border: none !important;
 }
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.modal-content {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    text-align: center;
+    max-width: 700px;
+    width: 90%;
+}
+.modal-content img {
+    width: 100%;
+    border-radius: 10px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -68,30 +93,32 @@ with col_right:
     st.markdown('<div class="section">', unsafe_allow_html=True)
     st.subheader("⚙️ Model Options")
 
-    # ניהול מצב צפייה בגרף (toggle)
-    if "show_graphs" not in st.session_state:
-        st.session_state.show_graphs = False
+    # ניהול מצב של המודאל
+    if "show_graph_modal" not in st.session_state:
+        st.session_state.show_graph_modal = False
 
-    # כפתור צפייה / הסתרה
-    if st.button("📊 View / Hide Model Performance"):
-        st.session_state.show_graphs = not st.session_state.show_graphs
+    # כפתור צפייה / סגירה
+    if not st.session_state.show_graph_modal:
+        if st.button("📊 View Model Performance"):
+            st.session_state.show_graph_modal = True
+    else:
+        if st.button("❌ Close Graphs"):
+            st.session_state.show_graph_modal = False
 
-    # הצגת גרפים אם נלחץ
-    if st.session_state.show_graphs:
-        st.markdown("### 📈 Model Accuracy Comparison")
-        models = ["CNN (Base)", "MobileNetV2", "EfficientNetB0"]
-        accuracy = [89, 93, 96]
-
-        fig, ax = plt.subplots(figsize=(4,3))
-        bars = ax.bar(models, accuracy, color=["#9b8fff", "#6C63FF", "#4dd0e1"])
-        ax.set_ylim(80, 100)
-        ax.set_ylabel("Accuracy (%)")
-        ax.set_title("Model Accuracy Comparison")
-
-        for bar, val in zip(bars, accuracy):
-            ax.text(bar.get_x() + bar.get_width()/2, val + 0.5, f"{val}%", ha='center', fontsize=10)
-
-        st.pyplot(fig)
+    # מודאל להצגת הגרף
+    if st.session_state.show_graph_modal:
+        with open("הורדה.png", "rb") as file:
+            img_data = base64.b64encode(file.read()).decode("utf-8")
+        modal_html = f"""
+        <div class="modal">
+            <div class="modal-content">
+                <h3>📈 Model Accuracy Comparison</h3>
+                <img src="data:image/png;base64,{img_data}" alt="Graphs">
+                <p style='margin-top:10px; color:#555;'>Comparison of model accuracy across training methods.</p>
+            </div>
+        </div>
+        """
+        st.markdown(modal_html, unsafe_allow_html=True)
 
     # בחירת מודל
     model_choice = st.selectbox("Select a model:", ["CNN (Base)", "MobileNetV2", "EfficientNetB0"])
