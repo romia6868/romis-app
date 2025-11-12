@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 
-# --- הגדרות כלליות של העמוד ---
+# --- הגדרות עמוד ---
 st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="wide")
 
 # --- עיצוב כללי ---
@@ -63,7 +63,7 @@ with col_left:
         st.info("⬆️ Please upload an image to get started.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---- צד ימין: צפייה בגרפים, בחירת מודל וסיווג ----
+# ---- צד ימין: צפייה בגרפים ובחירת מודל ----
 with col_right:
     st.markdown('<div class="section">', unsafe_allow_html=True)
     st.subheader("⚙️ Model Options")
@@ -79,11 +79,11 @@ with col_right:
     # הצגת הגרף מה-Google Drive
     if st.session_state.show_graphs:
         st.markdown("### 📈 Model Accuracy - Transfer Learning")
-        graph_url = "https://drive.google.com/uc?export=view&id=1AZ05TyAU8pc0-nhupdi9mCe9xB_-EJvi"
+        graph_url = "https://drive.google.com/uc?export=download&id=1AZ05TyAU8pc0-nhupdi9mCe9xB_-EJvi"
         st.image(graph_url, caption="Transfer Learning Performance Graph", use_container_width=True)
 
     # בחירת מודל
-    model_choice = st.selectbox("Select a model:", ["Transfer Learning", "CNN (Base)", "MobileNetV2", "EfficientNetB0"])
+    model_choice = st.selectbox("Select a model:", ["Transfer Learning", "MobileNetV2", "EfficientNetB0"])
 
     # כפתור סיווג
     if st.button("🌺 Classify") and uploaded_file:
