@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 
+# --- הגדרות כלליות של העמוד ---
 st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="wide")
 
 # --- עיצוב כללי ---
@@ -75,17 +76,14 @@ with col_right:
     if st.button("📊 View / Hide Model Performance"):
         st.session_state.show_graphs = not st.session_state.show_graphs
 
-    # הצגת הגרף אם נלחץ
+    # הצגת הגרף מה-Google Drive
     if st.session_state.show_graphs:
-        st.markdown("### 📈 Model Accuracy Comparison")
-        try:
-            graph_image = Image.open("graph.png")
-            st.image(graph_image, caption="Accuracy comparison between models", use_container_width=True)
-        except FileNotFoundError:
-            st.error("⚠️ Graph image not found. Please make sure 'graph.png' is in the same folder as this script.")
+        st.markdown("### 📈 Model Accuracy - Transfer Learning")
+        graph_url = "https://drive.google.com/uc?export=view&id=1AZ05TyAU8pc0-nhupdi9mCe9xB_-EJvi"
+        st.image(graph_url, caption="Transfer Learning Performance Graph", use_container_width=True)
 
     # בחירת מודל
-    model_choice = st.selectbox("Select a model:", ["CNN (Base)", "MobileNetV2", "EfficientNetB0"])
+    model_choice = st.selectbox("Select a model:", ["Transfer Learning", "CNN (Base)", "MobileNetV2", "EfficientNetB0"])
 
     # כפתור סיווג
     if st.button("🌺 Classify") and uploaded_file:
@@ -94,4 +92,3 @@ with col_right:
         st.success(f"**Predicted Flower:** {predicted_class}  \n**Confidence:** {confidence:.2f}%")
 
     st.markdown('</div>', unsafe_allow_html=True)
-
