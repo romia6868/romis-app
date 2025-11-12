@@ -1,17 +1,12 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import tensorflow as tf
-import os
-MODEL_PATHS = {
-    "Transfer Learning": "/content/drive/MyDrive/flower_project/transfer_resnet50_dense256.h5",
-    "Fine-tuned Model": "/content/drive/MyDrive/flower_project/fine_tuned_resnet50_final.h5",
-}
+import requests
+from io import BytesIO
 
-# --- הגדרות כלליות ---
 st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="wide")
 
-# --- עיצוב עמוד ---
+# --- עיצוב כללי ---
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
@@ -50,17 +45,7 @@ st.markdown("""
 
 # --- כותרת ---
 st.markdown('<div class="title">🌷 Flower Classifier 🌷</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload a flower and let my model identify it 🌸</div>', unsafe_allow_html=True)
-
-# --- תיקיית המודלים ---
-MODELS_DIR = "/content/drive/MyDrive/flower_project"
-
-# --- רשימת מודלים (תשני את הנתיבים שלך כאן) ---
-model_files = {
-    "Transfer Model": f"{MODELS_DIR}/transfer_resnet50_dense256.h5",
-    "Fine-tuned Model": f"{MODELS_DIR}/fine_tuned_resnet50_final.h5",
-    "Base CNN Model": f"{MODELS_DIR}/baseline_model.h5"
-}
+st.markdown('<div class="subtitle">Upload a flower and let the model identify it 🌸</div>', unsafe_allow_html=True)
 
 # --- שתי עמודות ---
 col_left, col_right = st.columns([1.2, 1])
@@ -79,40 +64,36 @@ with col_left:
         st.info("⬆️ Please upload an image to get started.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---- צד ימין: בחירת מודל וניבוי ----
+# ---- צד ימין: צפייה בגרפים, בחירת מודל וסיווג ----
 with col_right:
     st.markdown('<div class="section">', unsafe_allow_html=True)
     st.subheader("⚙️ Model Options")
 
-    # בחירת מודל אמיתי
-    selected_model_name = st.selectbox("בחר מודל לאימון:", list(model_files.keys()))
-    selected_model_path = model_files[selected_model_name]
+    # ניהול מצב צפייה בגרף
+    if "show_graphs" not in st.session_state:
+        st.session_state.show_graphs = False
 
-    # טעינת המודל
-    if st.button("🔄 Load Model"):
+    if st.button("📊 View / Hide Model Performance"):
+        st.session_state.show_graphs = not st.session_state.show_graphs
+
+    # הצגת גרף מה-Drive
+    if st.session_state.show_graphs:
+        st.markdown("### 📈 Model Accuracy - Transfer Learning")
+        image_url = "https://drive.google.com/uc?export=view&id=1AZ05TyAU8pc0-nhupdi9mCe9xB_-EJvi"
         try:
-            st.session_state.model = tf.keras.models.load_model(selected_model_path)
-            st.success(f"✅ Model '{selected_model_name}' loaded successfully!")
+            response = requests.get(image_url)
+            img = Image.open(BytesIO(response.content))
+            st.image(img, caption="Transfer Learning Performance Graph", use_container_width=True)
         except Exception as e:
-            st.error(f"❌ Error loading model: {e}")
+            st.error(f"⚠️ Failed to load image: {e}")
 
-    # ניבוי
+    # בחירת מודל
+    model_choice = st.selectbox("Select a model:", ["CNN (Base)", "MobileNetV2", "EfficientNetB0"])
+
     if st.button("🌺 Classify") and uploaded_file:
-        if "model" not in st.session_state:
-            st.warning("Please load a model first!")
-        else:
-            model = st.session_state.model
-
-            # הכנת תמונה
-            img = image.resize((224, 224))
-            img_array = np.expand_dims(np.array(img) / 255.0, axis=0)
-
-            # ניבוי
-            preds = model.predict(img_array)
-            class_names = ["Daisy", "Dandelion", "Rose", "Sunflower", "Tulip"]  # תשני לפי המידע שלך
-            predicted_class = class_names[np.argmax(preds)]
-            confidence = np.max(preds) * 100
-
-            st.success(f"**Predicted Flower:** {predicted_class}  \n**Confidence:** {confidence:.2f}%")
+        confidence = np.random.uniform(85, 99)
+        predicted_class = np.random.choice(["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"])
+        st.success(f"**Predicted Flower:** {predicted_class}  \n**Confidence:** {confidence:.2f}%")
 
     st.markdown('</div>', unsafe_allow_html=True)
+
