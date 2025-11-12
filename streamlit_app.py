@@ -3,6 +3,10 @@ import numpy as np
 from PIL import Image
 import tensorflow as tf
 import os
+MODEL_PATHS = {
+    "Transfer Learning": "/content/drive/MyDrive/flower_project/transfer_resnet50_dense256.h5",
+    "Fine-tuned Model": "/content/drive/MyDrive/flower_project/fine_tuned_resnet50_final.h5",
+}
 
 # --- הגדרות כלליות ---
 st.set_page_config(page_title="🌸 Flower Classifier", page_icon="🌺", layout="wide")
