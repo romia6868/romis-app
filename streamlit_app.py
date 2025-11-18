@@ -72,18 +72,15 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&display=swap');
 
-/* פונט לכל האתר */
 div, p, span, button, label, input, textarea, select,
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Comfortaa', sans-serif !important;
 }
 
-/* רקע */
 [data-testid="stAppViewContainer"] {
     background: linear-gradient(to bottom right, #ffe5ec, #ffc2d1);
 }
 
-/* כותרת */
 .title {
     text-align: center;
     font-size: 50px;
@@ -92,7 +89,6 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 5px;
 }
 
-/* כותרת משנה */
 .subtitle {
     text-align: center;
     font-size: 20px;
@@ -100,7 +96,6 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 40px;
 }
 
-/* קופסאות */
 .section {
     background-color: #ffe5ec;
     border-radius: 20px;
@@ -108,7 +103,6 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 4px 18px rgba(0,0,0,0.08);
 }
 
-/* כפתורים */
 .stButton > button {
     background-color: #ff8fab !important;
     color: white !important;
@@ -119,7 +113,6 @@ h1, h2, h3, h4, h5, h6 {
     transition: 0.2s ease-in-out;
 }
 
-/* Hover */
 .stButton > button:hover {
     background-color: #fb6f92 !important;
     transform: scale(1.03);
@@ -210,17 +203,16 @@ with col_right:
             predicted_class = class_names[np.argmax(prediction)]
             confidence = np.max(prediction) * 100
 
-           st.markdown(
+            # תיבת הצלחה מותאמת בשתי שורות
+            st.markdown(
                 f"""
-                <div style='background-color:#d4edda;padding:15px;border-radius:10px;border:1px solid #c3e6cb;color:#155724;'>
+                <div style='background-color:#d4edda;padding:15px;border-radius:10px;
+                border:1px solid #c3e6cb;color:#155724;'>
                     <b>Looks like a {predicted_class} to me.</b><br>
                     <b>I'm {confidence:.2f}% sure - that feels illegal to be that good 🧿.</b>
                 </div>
-                  """,
+                """,
                 unsafe_allow_html=True
             )
-
-
-        
 
     st.markdown('</div>', unsafe_allow_html=True)
