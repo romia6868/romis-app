@@ -169,12 +169,12 @@ with col_right:
         st.session_state.show_graphs = not st.session_state.show_graphs
 
     if st.session_state.show_graphs:
-        st.markdown("### 📈 Model Accuracy - Transfer Learning")
+        st.markdown("### 📈 Model Accuracy")
         image_url = "https://drive.google.com/uc?export=view&id=1AZ05TyAU8pc0-nhupdi9mCe9xB_-EJvi"
         try:
             response = requests.get(image_url)
             img = Image.open(BytesIO(response.content))
-            st.image(img, caption="Transfer Learning Performance Graph", use_container_width=True)
+            st.image(img, use_container_width=True)
         except:
             st.error("⚠️ Could not load graph.")
 
@@ -206,13 +206,16 @@ with col_right:
             img_array = np.expand_dims(img_array, axis=0)
 
             prediction = model.predict(img_array)[0]
-            class_names = ["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"]
+            class_names = ["Daisy", "Dandelion", "Tulip"]
             predicted_class = class_names[np.argmax(prediction)]
             confidence = np.max(prediction) * 100
 
             st.success(
-                f"Looks like a {predicted_class} to me.\n"
-                f"I'm {confidence:.2f}% sure — that feels illegal to be that good 🧿."
+                f"Looks like a {predicted_class} to me.<br>"
+                f"I'm {confidence:.2f}% sure — that feels illegal to be that good 🧿.",
+                unsafe_allow_html=True
             )
+
+        
 
     st.markdown('</div>', unsafe_allow_html=True)
