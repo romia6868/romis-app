@@ -208,14 +208,14 @@ with col_right:
             img_array = np.expand_dims(img_array, axis=0)
 
             prediction = model.predict(img_array)[0]
-            class_names = ["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"]
+            class_names = ["Daisy", "Dandelion", "Tulip"]
             predicted_class = class_names[np.argmax(prediction)]
             confidence = np.max(prediction) * 100
 
-         st.success(
-    f"Looks like a {predicted_class} to me.\n"
-    f"I'm {confidence:.2f}% sure — that feels illegal to be that good🧿."
-)
+             st.success(
+                f"Looks like a {predicted_class} to me.\n"
+                f"I'm {confidence:.2f}% sure — that feels illegal to be that good🧿."
+                )
  
 
     st.markdown('</div>', unsafe_allow_html=True)
