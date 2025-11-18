@@ -69,6 +69,9 @@ def load_selected_model(model_name):
 st.markdown("""
 <style>
 
+/* טעינת הפונט Comfortaa */
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&display=swap');
+
 /* ----- רקע כללי ----- */
 [data-testid="stAppViewContainer"] {
     background: linear-gradient(
@@ -76,15 +79,16 @@ st.markdown("""
         #ffe5ec,
         #ffc2d1
     );
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Comfortaa', sans-serif;
 }
 
 /* ----- כותרת ----- */
 .title {
     text-align: center;
     font-size: 50px;
-    color: #fb6f92;  /* ורוד עמוק מהפלטה */
-    font-weight: 800;
+    color: #fb6f92;
+    font-weight: 700;
+    font-family: 'Comfortaa', sans-serif;
     margin-top: 5px;
 }
 
@@ -93,31 +97,34 @@ st.markdown("""
     text-align: center;
     font-size: 20px;
     color: #6b6b6b;
+    font-family: 'Comfortaa', sans-serif;
     margin-bottom: 40px;
 }
 
-/* ----- קופסאות תוכן ----- */
+/* ----- קופסאות ----- */
 .section {
-    background-color: #ffe5ec; /* ורוד בהיר מהפלטה */
+    background-color: #ffe5ec;
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    font-family: 'Comfortaa', sans-serif;
 }
 
 /* ----- כפתורים ----- */
 .stButton > button {
-    background-color: #ff8fab !important; /* ורוד בינוני */
+    background-color: #ff8fab !important;
     color: white !important;
     border-radius: 10px !important;
     font-size: 18px !important;
     padding: 8px 28px !important;
     border: none !important;
     transition: 0.2s ease-in-out;
+    font-family: 'Comfortaa', sans-serif;
 }
 
 /* אפקט רחף */
 .stButton > button:hover {
-    background-color: #fb6f92 !important; /* ורוד כהה יותר */
+    background-color: #fb6f92 !important;
     transform: scale(1.03);
 }
 
