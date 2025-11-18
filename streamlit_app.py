@@ -72,8 +72,9 @@ st.markdown("""
 /* טעינת הפונט Comfortaa */
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&display=swap');
 
-/* ----- פונט ברירת מחדל לכל האתר ----- */
-html, body, [class*="css"] {
+/* ----- Comfortaa לכל האתר ----- */
+div, p, span, button, label, input, textarea, select,
+h1, h2, h3, h4, h5, h6 {
     font-family: 'Comfortaa', sans-serif !important;
 }
 
@@ -103,7 +104,7 @@ html, body, [class*="css"] {
     margin-bottom: 40px;
 }
 
-/* ----- קופסאות ----- */
+/* ----- קופסאות (section) ----- */
 .section {
     background-color: #ffe5ec;
     border-radius: 20px;
