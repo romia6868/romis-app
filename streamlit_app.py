@@ -1,4 +1,3 @@
-
 import streamlit as st
 import numpy as np
 from PIL import Image
@@ -11,7 +10,7 @@ import os
 st.set_page_config(page_title="🌺 Flower Classifier", page_icon="🌺", layout="wide")
 
 # ===================================================================
-#                  הגדרות הורדת מודלים מהערך
+#                    הגדרות הורדת מודלים מהדרייב
 # ===================================================================
 
 DRIVE_FOLDER_URL = "https://drive.google.com/drive/folders/1qb_T3GmxYJxM1nWc7fu-JllEslCVe-Gv?usp=drive_link"
@@ -20,20 +19,22 @@ LOCAL_MODEL_DIR = "models_from_drive"
 MODEL_FILES = {
     "CNN": "cnn_flowers_model.keras",
     "Fine tuning": "fine_tuned_resnet50_final.h5",
-    "Fully connected": "flowers_model.h5"
+    "Fully Fully Connected": "flowers_model.h5"
 }
 
+# יצירת תקייה אם לא קיימת
 if not os.path.exists(LOCAL_MODEL_DIR):
     os.makedirs(LOCAL_MODEL_DIR)
 
-# יצירת session state למודל טעון
+# session states
 if "loaded_model" not in st.session_state:
     st.session_state.loaded_model = None
+
 if "loaded_model_name" not in st.session_state:
     st.session_state.loaded_model_name = None
 
 
-# פונקציה שמורידה את כל התיקייה בדרייב
+# הורדת מודלים
 def download_all_models():
     try:
         gdown.download_folder(DRIVE_FOLDER_URL, output=LOCAL_MODEL_DIR, quiet=False)
@@ -43,13 +44,13 @@ def download_all_models():
         return False
 
 
-# טוען מודל מסוים לפי בחירה
+# טעינת מודל נבחר
 def load_selected_model(model_name):
     file_name = MODEL_FILES[model_name]
     path = os.path.join(LOCAL_MODEL_DIR, file_name)
 
     if not os.path.exists(path):
-        st.warning("Model file missing locally. Downloading from Drive...")
+        st.warning("Model not found locally. Downloading from Google Drive...")
         if not download_all_models():
             return None
 
@@ -64,30 +65,25 @@ def load_selected_model(model_name):
 
 
 # ===================================================================
-#                            עיצוב
+#                              עיצוב
 # ===================================================================
 st.markdown("""
 <style>
 
-/* טעינת הפונט Comfortaa */
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&display=swap');
 
-/* ----- Comfortaa לכל האתר ----- */
+/* פונט לכל האתר */
 div, p, span, button, label, input, textarea, select,
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Comfortaa', sans-serif !important;
 }
 
-/* ----- רקע כללי ----- */
+/* רקע */
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(
-        to bottom right,
-        #ffe5ec,
-        #ffc2d1
-    );
+    background: linear-gradient(to bottom right, #ffe5ec, #ffc2d1);
 }
 
-/* ----- כותרת ----- */
+/* כותרת */
 .title {
     text-align: center;
     font-size: 50px;
@@ -96,7 +92,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 5px;
 }
 
-/* ----- כותרת משנה ----- */
+/* כותרת משנה */
 .subtitle {
     text-align: center;
     font-size: 20px;
@@ -104,7 +100,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 40px;
 }
 
-/* ----- קופסאות (section) ----- */
+/* קופסאות */
 .section {
     background-color: #ffe5ec;
     border-radius: 20px;
@@ -112,7 +108,7 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 4px 18px rgba(0,0,0,0.08);
 }
 
-/* ----- כפתורים ----- */
+/* כפתורים */
 .stButton > button {
     background-color: #ff8fab !important;
     color: white !important;
@@ -123,7 +119,7 @@ h1, h2, h3, h4, h5, h6 {
     transition: 0.2s ease-in-out;
 }
 
-/* אפקט רחף */
+/* Hover */
 .stButton > button:hover {
     background-color: #fb6f92 !important;
     transform: scale(1.03);
@@ -132,18 +128,20 @@ h1, h2, h3, h4, h5, h6 {
 </style>
 """, unsafe_allow_html=True)
 
+
+# כותרות
 st.markdown('<div class="title">🎀 Flower Classifier 🎀</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload a flower and let my model identify it!!☁️ </div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Upload a flower and let my model identify it!! ☁️ </div>', unsafe_allow_html=True)
 
 col_left, col_right = st.columns([1.2, 1])
 
-# ===================================================================
-#                          העלאת תמונה
-# ===================================================================
 
+# ===================================================================
+#                              העלאת תמונה
+# ===================================================================
 with col_left:
     st.markdown('<div class="section">', unsafe_allow_html=True)
-    st.subheader("📸 Upload Image please")
+    st.subheader("📸 Upload Image Please")
 
     uploaded_file = st.file_uploader("Choose a flower image:", type=["jpg", "jpeg", "png"])
 
@@ -155,10 +153,10 @@ with col_left:
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ===================================================================
-#                          בחירת מודל + טעינה + חיזוי
-# ===================================================================
 
+# ===================================================================
+#                        בחירת מודל + טעינה + חיזוי
+# ===================================================================
 with col_right:
     st.markdown('<div class="section">', unsafe_allow_html=True)
     st.subheader("⚙️ Model Options")
@@ -183,39 +181,38 @@ with col_right:
     # בחירת מודל
     model_choice = st.selectbox("Select a model:", list(MODEL_FILES.keys()))
 
-    # כפתור טעינת המודל
+    # כפתור טעינה
     if st.button("🔌 Load Model"):
         st.write("🔄 Loading selected model...")
-        m = load_selected_model(model_choice)
-        if m is not None:
+        model = load_selected_model(model_choice)
+        if model is not None:
             st.success(f"✔️ Model '{model_choice}' loaded successfully")
 
-    # הצגת סטטוס טעינה
+    # הצגת סטטוס
     if st.session_state.loaded_model is not None:
         st.info(f"Loaded model: {st.session_state.loaded_model_name}")
 
-    # כפתור סיווג
+    # כפתור חיזוי
     if st.button("🌺 Classify") and uploaded_file:
-    if st.session_state.loaded_model is None:
-        st.error("⚠️ Please load a model before classifying.")
-    else:
-        st.write("🔄 Analyzing image...")
+        if st.session_state.loaded_model is None:
+            st.error("⚠️ Please load a model before classifying.")
+        else:
+            st.write("🔄 Analyzing image...")
 
-        model = st.session_state.loaded_model
+            model = st.session_state.loaded_model
 
-        img = image.resize((224, 224))
-        img_array = np.array(img) / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
+            img = image.resize((224, 224))
+            img_array = np.array(img) / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
 
-        prediction = model.predict(img_array)[0]
-        class_names = ["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"]
-        predicted_class = class_names[np.argmax(prediction)]
-        confidence = np.max(prediction) * 100
+            prediction = model.predict(img_array)[0]
+            class_names = ["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"]
+            predicted_class = class_names[np.argmax(prediction)]
+            confidence = np.max(prediction) * 100
 
-        st.success(
-            f"Looks like a {predicted_class} to me.\n"
-            f"I'm {confidence:.2f}% sure — that feels illegal to be that good 🧿."
-        )
+            st.success(
+                f"Looks like a {predicted_class} to me.\n"
+                f"I'm {confidence:.2f}% sure — that feels illegal to be that good 🧿."
+            )
 
     st.markdown('</div>', unsafe_allow_html=True)
-
