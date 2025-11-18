@@ -72,6 +72,11 @@ st.markdown("""
 /* טעינת הפונט Comfortaa */
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&display=swap');
 
+/* ----- פונט ברירת מחדל לכל האתר ----- */
+html, body, [class*="css"] {
+    font-family: 'Comfortaa', sans-serif !important;
+}
+
 /* ----- רקע כללי ----- */
 [data-testid="stAppViewContainer"] {
     background: linear-gradient(
@@ -79,7 +84,6 @@ st.markdown("""
         #ffe5ec,
         #ffc2d1
     );
-    font-family: 'Comfortaa', sans-serif;
 }
 
 /* ----- כותרת ----- */
@@ -88,7 +92,6 @@ st.markdown("""
     font-size: 50px;
     color: #fb6f92;
     font-weight: 700;
-    font-family: 'Comfortaa', sans-serif;
     margin-top: 5px;
 }
 
@@ -97,7 +100,6 @@ st.markdown("""
     text-align: center;
     font-size: 20px;
     color: #6b6b6b;
-    font-family: 'Comfortaa', sans-serif;
     margin-bottom: 40px;
 }
 
@@ -107,7 +109,6 @@ st.markdown("""
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.08);
-    font-family: 'Comfortaa', sans-serif;
 }
 
 /* ----- כפתורים ----- */
@@ -119,7 +120,6 @@ st.markdown("""
     padding: 8px 28px !important;
     border: none !important;
     transition: 0.2s ease-in-out;
-    font-family: 'Comfortaa', sans-serif;
 }
 
 /* אפקט רחף */
