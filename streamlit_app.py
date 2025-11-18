@@ -212,7 +212,11 @@ with col_right:
             predicted_class = class_names[np.argmax(prediction)]
             confidence = np.max(prediction) * 100
 
-            st.success(f"**🌼 Predicted Flower:** {predicted_class}\n**Confidence:** {confidence:.2f}%")
+         st.success(
+    f"Looks like a {predicted_class} to me.\n"
+    f"I'm {confidence:.2f}% sure — that feels illegal to be that good🧿."
+)
+ 
 
     st.markdown('</div>', unsafe_allow_html=True)
 
