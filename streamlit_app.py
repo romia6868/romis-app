@@ -196,27 +196,26 @@ with col_right:
 
     # כפתור סיווג
     if st.button("🌺 Classify") and uploaded_file:
-        if st.session_state.loaded_model is None:
-            st.error("⚠️ Please load a model before classifying.")
-        else:
-            st.write("🔄 Analyzing image...")
+    if st.session_state.loaded_model is None:
+        st.error("⚠️ Please load a model before classifying.")
+    else:
+        st.write("🔄 Analyzing image...")
 
-            model = st.session_state.loaded_model
+        model = st.session_state.loaded_model
 
-            img = image.resize((224, 224))
-            img_array = np.array(img) / 255.0
-            img_array = np.expand_dims(img_array, axis=0)
+        img = image.resize((224, 224))
+        img_array = np.array(img) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
 
-            prediction = model.predict(img_array)[0]
-            class_names = ["Daisy", "Dandelion", "Tulip"]
-            predicted_class = class_names[np.argmax(prediction)]
-            confidence = np.max(prediction) * 100
+        prediction = model.predict(img_array)[0]
+        class_names = ["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"]
+        predicted_class = class_names[np.argmax(prediction)]
+        confidence = np.max(prediction) * 100
 
-             st.success(
-                f"Looks like a {predicted_class} to me.\n"
-                f"I'm {confidence:.2f}% sure — that feels illegal to be that good🧿."
-                )
- 
+        st.success(
+            f"Looks like a {predicted_class} to me.\n"
+            f"I'm {confidence:.2f}% sure — that feels illegal to be that good 🧿."
+        )
 
     st.markdown('</div>', unsafe_allow_html=True)
 
