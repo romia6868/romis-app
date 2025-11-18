@@ -1,3 +1,4 @@
+
 import streamlit as st
 import numpy as np
 from PIL import Image
@@ -9,41 +10,62 @@ import os
 
 st.set_page_config(page_title="🌺 Flower Classifier", page_icon="🌺", layout="wide")
 
-#טעינת המודלים
+# ===================================================================
+#                  הגדרות הורדת מודלים מהערך
+# ===================================================================
+
 DRIVE_FOLDER_URL = "https://drive.google.com/drive/folders/1qb_T3GmxYJxM1nWc7fu-JllEslCVe-Gv?usp=drive_link"
 LOCAL_MODEL_DIR = "models_from_drive"
 
 MODEL_FILES = {
-    "CNN (Base)": "cnn_flowers_model.keras",
+    "CNN": "cnn_flowers_model.keras",
     "Fine tuning": "fine_tuned_resnet50_final.h5",
-    "Fully Connected": "flowers_model.h5"
+    "Fully connected": "flowers_model.h5"
 }
 
 if not os.path.exists(LOCAL_MODEL_DIR):
     os.makedirs(LOCAL_MODEL_DIR)
 
-missing = [name for name in MODEL_FILES.values()
-           if not os.path.exists(os.path.join(LOCAL_MODEL_DIR, name))]
+# יצירת session state למודל טעון
+if "loaded_model" not in st.session_state:
+    st.session_state.loaded_model = None
+if "loaded_model_name" not in st.session_state:
+    st.session_state.loaded_model_name = None
 
-if missing:
-    st.write("⏳ מוריד את המודלים מה־Google Drive ...")
+
+# פונקציה שמורידה את כל התיקייה בדרייב
+def download_all_models():
     try:
         gdown.download_folder(DRIVE_FOLDER_URL, output=LOCAL_MODEL_DIR, quiet=False)
-        st.success("✔️ כל המודלים הורדו בהצלחה")
+        return True
     except Exception as e:
-        st.error(f"❌ שגיאה בהורדת המודלים: {e}")
-        st.stop()
+        st.error(f"Error downloading from Drive: {e}")
+        return False
 
-# טעינת המודלים לזיכרון
-loaded_models = {}
-for model_name, file_name in MODEL_FILES.items():
+
+# טוען מודל מסוים לפי בחירה
+def load_selected_model(model_name):
+    file_name = MODEL_FILES[model_name]
     path = os.path.join(LOCAL_MODEL_DIR, file_name)
+
+    if not os.path.exists(path):
+        st.warning("Model file missing locally. Downloading from Drive...")
+        if not download_all_models():
+            return None
+
     try:
-        loaded_models[model_name] = tf.keras.models.load_model(path)
+        model = tf.keras.models.load_model(path)
+        st.session_state.loaded_model = model
+        st.session_state.loaded_model_name = model_name
+        return model
     except Exception as e:
-        st.error(f"❌ שגיאה בטעינת {file_name}: {e}")
-        st.stop()
-#                             עיצוב
+        st.error(f"Failed to load model: {e}")
+        return None
+
+
+# ===================================================================
+#                            עיצוב
+# ===================================================================
 
 st.markdown("""
 <style>
@@ -81,13 +103,18 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="title">🌷 Flower Classifier 🌷</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload a flower and let the model identify it 🌸</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">🌈 Flower Classifier 🌈</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Upload a flower and let my model identify it!!🌸</div>', unsafe_allow_html=True)
 
 col_left, col_right = st.columns([1.2, 1])
+
+# ===================================================================
+#                          העלאת תמונה
+# ===================================================================
+
 with col_left:
     st.markdown('<div class="section">', unsafe_allow_html=True)
-    st.subheader("📸 Upload Image")
+    st.subheader("📸 Upload Image please")
 
     uploaded_file = st.file_uploader("Choose a flower image:", type=["jpg", "jpeg", "png"])
 
@@ -99,12 +126,15 @@ with col_left:
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-#בחירת מודל
+# ===================================================================
+#                          בחירת מודל + טעינה + חיזוי
+# ===================================================================
+
 with col_right:
     st.markdown('<div class="section">', unsafe_allow_html=True)
     st.subheader("⚙️ Model Options")
 
-    # Graph toggles
+    # הצגת גרפים
     if "show_graphs" not in st.session_state:
         st.session_state.show_graphs = False
 
@@ -121,24 +151,39 @@ with col_right:
         except:
             st.error("⚠️ Could not load graph.")
 
-    # Model selector
+    # בחירת מודל
     model_choice = st.selectbox("Select a model:", list(MODEL_FILES.keys()))
 
-    # Real prediction
+    # כפתור טעינת המודל
+    if st.button("🔌 Load Model"):
+        st.write("🔄 Loading selected model...")
+        m = load_selected_model(model_choice)
+        if m is not None:
+            st.success(f"✔️ Model '{model_choice}' loaded successfully")
+
+    # הצגת סטטוס טעינה
+    if st.session_state.loaded_model is not None:
+        st.info(f"Loaded model: {st.session_state.loaded_model_name}")
+
+    # כפתור סיווג
     if st.button("🌺 Classify") and uploaded_file:
-        st.write("🔄 Analyzing image...")
+        if st.session_state.loaded_model is None:
+            st.error("⚠️ Please load a model before classifying.")
+        else:
+            st.write("🔄 Analyzing image...")
 
-        model = loaded_models[model_choice]
+            model = st.session_state.loaded_model
 
-        img = image.resize((224, 224))  # התאם לגודל שהמודלים שלך דורשים
-        img_array = np.array(img) / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
+            img = image.resize((224, 224))
+            img_array = np.array(img) / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
 
-        prediction = model.predict(img_array)[0]
-        class_names = ["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"]
-        predicted_class = class_names[np.argmax(prediction)]
-        confidence = np.max(prediction) * 100
+            prediction = model.predict(img_array)[0]
+            class_names = ["Daisy", "Dandelion", "Tulip", "Rose", "Sunflower"]
+            predicted_class = class_names[np.argmax(prediction)]
+            confidence = np.max(prediction) * 100
 
-        st.success(f"**🌼 Predicted Flower:** {predicted_class}\n**Confidence:** {confidence:.2f}%")
+            st.success(f"**🌼 Predicted Flower:** {predicted_class}\n**Confidence:** {confidence:.2f}%")
 
     st.markdown('</div>', unsafe_allow_html=True)
+
