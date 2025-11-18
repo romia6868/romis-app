@@ -70,7 +70,7 @@ def load_selected_model(model_name):
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(to bottom right, #f8f9ff, #e0f7fa);
+    background: linear-gradient(to bottom right, #f5ebe0, #e3d5ca);
     font-family: 'Segoe UI', sans-serif;
 }
 .title {
@@ -83,17 +83,25 @@ st.markdown("""
 .subtitle {
     text-align: center;
     font-size: 20px;
-    color: #333;
+    color:  #6C63FF;
     margin-bottom: 40px;
 }
 .section {
-    background-color: white;
+    background-color:  #6C63FF;
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.1);
 }
 .stButton > button {
+    background-color: .stButton > button {
     background-color: #6C63FF !important;
+    color: white !important;
+    border-radius: 10px !important;
+    font-size: 18px !important;
+    padding: 8px 28px !important;
+    border: none !important;
+}
+ !important;
     color: white !important;
     border-radius: 10px !important;
     font-size: 18px !important;
@@ -103,8 +111,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="title">🌈 Flower Classifier 🌈</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload a flower and let my model identify it!!🌸</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">💐 Flower Classifier 💐</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Upload a flower and let my model identify it!!🌞</div>', unsafe_allow_html=True)
 
 col_left, col_right = st.columns([1.2, 1])
 
