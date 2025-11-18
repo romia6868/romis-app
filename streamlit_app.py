@@ -210,11 +210,16 @@ with col_right:
             predicted_class = class_names[np.argmax(prediction)]
             confidence = np.max(prediction) * 100
 
-            st.success(
-                f"Looks like a {predicted_class} to me.<br>"
-                f"I'm {confidence:.2f}% sure — that feels illegal to be that good 🧿.",
+           st.markdown(
+                f"""
+                <div style='background-color:#d4edda;padding:15px;border-radius:10px;border:1px solid #c3e6cb;color:#155724;'>
+                    <b>Looks like a {predicted_class} to me.</b><br>
+                    <b>I'm {confidence:.2f}% sure - that feels illegal to be that good 🧿.</b>
+                </div>
+                  """,
                 unsafe_allow_html=True
             )
+
 
         
 
