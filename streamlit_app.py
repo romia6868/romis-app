@@ -66,52 +66,65 @@ def load_selected_model(model_name):
 # ===================================================================
 #                            עיצוב
 # ===================================================================
-
 st.markdown("""
 <style>
+
+/* ----- רקע כללי ----- */
 [data-testid="stAppViewContainer"] {
-    background: #ffe5ec;
-    font-family: 'BBH Sans Hegarty', sans-serif;
+    background: linear-gradient(
+        to bottom right,
+        #ffe5ec,
+        #ffc2d1
+    );
+    font-family: 'Segoe UI', sans-serif;
 }
+
+/* ----- כותרת ----- */
 .title {
     text-align: center;
     font-size: 50px;
-    color: #ffc2d1;
+    color: #fb6f92;  /* ורוד עמוק מהפלטה */
     font-weight: 800;
     margin-top: 5px;
 }
+
+/* ----- כותרת משנה ----- */
 .subtitle {
     text-align: center;
     font-size: 20px;
-    color:  #ffb3c6;
+    color: #6b6b6b;
     margin-bottom: 40px;
 }
+
+/* ----- קופסאות תוכן ----- */
 .section {
-    background-color: #ffc2d1;
+    background-color: #ffe5ec; /* ורוד בהיר מהפלטה */
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
 }
+
+/* ----- כפתורים ----- */
 .stButton > button {
-    background-color: .stButton > button {
-    background-color: #ffc2d1 !important;
+    background-color: #ff8fab !important; /* ורוד בינוני */
     color: white !important;
     border-radius: 10px !important;
     font-size: 18px !important;
     padding: 8px 28px !important;
     border: none !important;
+    transition: 0.2s ease-in-out;
 }
- !important;
-    color: white !important;
-    border-radius: 10px !important;
-    font-size: 18px !important;
-    padding: 8px 28px !important;
-    border: none !important;
+
+/* אפקט רחף */
+.stButton > button:hover {
+    background-color: #fb6f92 !important; /* ורוד כהה יותר */
+    transform: scale(1.03);
 }
+
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="title">💐 Flower Classifier 💐</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">🎀 Flower Classifier 🎀</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Upload a flower and let my model identify it!!☁️ </div>', unsafe_allow_html=True)
 
 col_left, col_right = st.columns([1.2, 1])
